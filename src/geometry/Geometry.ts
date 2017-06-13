@@ -1,8 +1,9 @@
 export const enum GeometryKind {
-	point = 0,
-	lineString,
-	polygon,
-	geometryCollection
+	geometry = 0,
+	point = 1,
+	lineString = 2,
+	polygon = 3,
+	geometryCollection = 7
 }
 
 export abstract class Geometry {

@@ -12,7 +12,7 @@ export class Polygon extends Geometry {
 		}
 
 		typeList.push([2, T.int32]);
-		dataList.push([3, ringCount]);
+		dataList.push([this.kind, ringCount]);
 
 		for(let ring of this.ringList) {
 			if(ring) {

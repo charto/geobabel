@@ -5,7 +5,7 @@ export class GeometryCollection extends Geometry {
 
 	toWKB(typeList: number[][], dataList: number[][]) {
 		typeList.push([2, T.int32]);
-		dataList.push([7, this.memberList.length]);
+		dataList.push([this.kind, this.memberList.length]);
 
 		let size = 8;
 		for(let member of this.memberList) {
