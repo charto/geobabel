@@ -1,0 +1,30 @@
+{
+  "name": "geobabel",
+  "version": "0.0.1",
+  "description": "Geodata conversion",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
+  "scripts": {
+    "tsc": "tsc",
+    "prepublish": "tsc -p src"
+  },
+  "author": "Juha Järvi",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/charto/geobabel.git"
+  },
+  "bugs": {
+    "url": "https://github.com/charto/geobabel/issues"
+  },
+  "homepage": "https://github.com/charto/geobabel#readme",
+  "keywords": [
+    "format",
+    "gis",
+    "gml",
+	"wkb"
+  ],
+  "devDependencies": {
+    "typescript": "^2.3.4"
+  }
+}
