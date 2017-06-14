@@ -1,6 +1,7 @@
 import { Geometry } from './geometry/Geometry';
 
 export const enum BinaryType {
+	int8,
 	int32,
 	double
 }
@@ -44,6 +45,13 @@ export function encodeBinary(
 					}
 					break;
 
+				case BinaryType.int8:
+
+					data.set(dataChunk.slice(dataPos, dataPos + len), pos);
+					dataPos += len;
+					pos += len;
+					break;
+
 				case BinaryType.int32:
 
 					while(len--) {
@@ -63,9 +71,8 @@ export function exportWKB(geometry: Geometry) {
 	const typeList: number[][] = [];
 	const dataList: number[][] = [];
 
-	const size = 1 + geometry.toWKB(typeList, dataList);
+	const size = geometry.toWKB(typeList, dataList);
 	const data = new Uint8Array(size);
 
-	data[0] = 1; // Little endian.
-	return(encodeBinary(typeList, dataList, data, 1));
+	return(encodeBinary(typeList, dataList, data));
 }

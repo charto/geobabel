@@ -11,8 +11,8 @@ export class Polygon extends Geometry {
 			if(ring) ++ringCount;
 		}
 
-		typeList.push([2, T.int32]);
-		dataList.push([this.kind, ringCount]);
+		typeList.push([1, T.int8, 2, T.int32]);
+		dataList.push([1, this.kind, ringCount]);
 
 		for(let ring of this.ringList) {
 			if(ring) {
@@ -23,7 +23,7 @@ export class Polygon extends Geometry {
 			}
 		}
 
-		return(8 + ringCount * 4 + ptCount * 16);
+		return(9 + ringCount * 4 + ptCount * 16);
 	}
 
 	ringList: (number[] | null)[];
