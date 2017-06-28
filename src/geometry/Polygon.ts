@@ -26,7 +26,7 @@ export class Polygon extends Geometry {
 		return(9 + ringCount * 4 + ptCount * 16);
 	}
 
-	ringList: (number[] | null)[];
+	ringList: (number[] | null)[] = [];
 
 }
 

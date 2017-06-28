@@ -3,7 +3,14 @@ export const enum GeometryKind {
 	point = 1,
 	lineString = 2,
 	polygon = 3,
-	geometryCollection = 7
+	multiPoint = 4,
+	multiLineString = 5,
+	multiPolygon = 6,
+	geometryCollection = 7,
+	multiCurve = 11,
+	multiSurface = 12,
+	curve = 13,
+	surface = 14
 }
 
 export abstract class Geometry {
@@ -11,3 +18,5 @@ export abstract class Geometry {
 
 	kind: GeometryKind;
 }
+
+Geometry.prototype.kind = GeometryKind.geometry;

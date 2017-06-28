@@ -3,7 +3,21 @@ geobabel
 
 Fast conversion between GIS formats. Currently in alpha stage and supports:
 
+Formats:
+
 - WKB (write)
+
+Geometries:
+
+- Point
+- LineString
+- Polygon
+- MultiPoint
+- MultiLineString
+- MultiPolygon
+- GeometryCollection
+- MultiCurve
+- MultiSurface
 
 License
 =======

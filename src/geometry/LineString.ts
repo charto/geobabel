@@ -1,7 +1,8 @@
-import { Geometry, GeometryKind } from './Geometry';
+import { GeometryKind } from './Geometry';
+import { Curve } from './Curve';
 import { BinaryType as T } from '../WKB';
 
-export class LineString extends Geometry {
+export class LineString extends Curve {
 
 	toWKB(typeList: number[][], dataList: number[][]) {
 		const count = this.posList.length >> 1;
@@ -10,7 +11,7 @@ export class LineString extends Geometry {
 		return(9 + count * 16);
 	}
 
-	posList: number[];
+	posList: number[] = [];
 
 }
 
