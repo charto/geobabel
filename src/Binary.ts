@@ -69,3 +69,52 @@ export function writeF64(state: BinaryState, pos: number, num: number) {
 		return(pos);
 	}
 }
+
+export function readU32(state: BinaryState) {
+	const data = state.data;
+	let pos = state.pos;
+	let num: number;
+
+	if(state.endian == Endian.little) {
+		num = data[pos++];
+		num |= data[pos++] << 8;
+		num |= data[pos++] << 16;
+		num |= data[pos++] << 32;
+	} else {
+		num = data[pos++];
+		num = (num << 8) | data[pos++];
+		num = (num << 8) | data[pos++];
+		num = (num << 8) | data[pos++];
+	}
+
+	state.pos = pos;
+	return(num);
+}
+
+export function readF64(state: BinaryState) {
+	const data = state.data;
+	let pos = state.pos;
+
+	if(state.endian == nativeEndian) {
+		bufF64[0] = data[pos++];
+		bufF64[1] = data[pos++];
+		bufF64[2] = data[pos++];
+		bufF64[3] = data[pos++];
+		bufF64[4] = data[pos++];
+		bufF64[5] = data[pos++];
+		bufF64[6] = data[pos++];
+		bufF64[7] = data[pos++];
+	} else {
+		bufF64[7] = data[pos++];
+		bufF64[6] = data[pos++];
+		bufF64[5] = data[pos++];
+		bufF64[4] = data[pos++];
+		bufF64[3] = data[pos++];
+		bufF64[2] = data[pos++];
+		bufF64[1] = data[pos++];
+		bufF64[0] = data[pos++];
+	}
+
+	state.pos = pos;
+	return(tempF64[0]);
+}

@@ -5,7 +5,8 @@ Fast conversion between GIS formats. Currently in alpha stage and supports:
 
 Formats:
 
-- WKB (write)
+- WKB (read / write)
+- WKT (write)
 
 Geometries:
 

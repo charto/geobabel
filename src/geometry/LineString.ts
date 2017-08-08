@@ -1,4 +1,4 @@
-import { writeF64 } from '../Binary';
+import { readU32, readF64, writeF64 } from '../Binary';
 import { WKBState, WKTOptions, GeometryKind, registerType, writePosListWKT } from '../WKX';
 import { Curve } from './Curve';
 
@@ -22,6 +22,16 @@ export class LineString extends Curve {
 
 	writeWKT(options: WKTOptions) {
 		return(writePosListWKT(options, this.posList));
+	}
+
+	readWKB(state: WKBState) {
+		const count = readU32(state) * 2;
+
+		for(let num = 0; num < count; ++num) {
+			this.posList[num] = readF64(state);
+		}
+
+		return(this);
 	}
 
 }

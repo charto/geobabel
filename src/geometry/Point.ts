@@ -1,4 +1,4 @@
-import { writeF64 } from '../Binary';
+import { readF64, writeF64 } from '../Binary';
 import { WKBState, WKTOptions, GeometryKind, registerType } from '../WKX';
 import { Geometry } from './Geometry';
 
@@ -24,6 +24,13 @@ export class Point extends Geometry {
 
 	writeWKT(options: WKTOptions) {
 		return(this.pos[0] + ' ' + this.pos[1]);
+	}
+
+	readWKB(state: WKBState) {
+		this.pos[0] = readF64(state);
+		this.pos[1] = readF64(state);
+
+		return(this);
 	}
 
 	pos: number[];

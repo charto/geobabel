@@ -1,3 +1,4 @@
+import { readU32 } from '../Binary';
 import { WKBState, WKTOptions, GeometryKind, registerType } from '../WKX';
 import { Geometry } from './Geometry';
 
@@ -31,6 +32,16 @@ export class GeometryCollection extends Geometry {
 				(member: Geometry) => member.toWKT(options)
 			).join(',')
 		);
+	}
+
+	readWKB(state: WKBState) {
+		const count = readU32(state);
+
+		for(let num = 0; num < count; ++num) {
+			this.addChild(Geometry.readWKB(state));
+		}
+
+		return(this);
 	}
 
 	addChild(child: Geometry) { this.childList.push(child); }

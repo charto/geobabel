@@ -13,6 +13,7 @@ import {
 export abstract class Geometry {
 	abstract measureWKB(): number;
 	abstract writeWKT(options: WKTOptions): string;
+	abstract readWKB(state: WKBState): this;
 
 	writeWKB(state: WKBState, pos: number, count?: number) {
 		const data = state.data;
@@ -41,6 +42,25 @@ export abstract class Geometry {
 			GeometryKind[this.kind].toUpperCase() +
 			'(' + this.writeWKT(options) + ')'
 		);
+	}
+
+	static readWKB(state: WKBState) {
+		state.endian = state.data[state.pos++];
+
+		const tag = readU32(state);
+		const Type = typeList[tag];
+
+		if(!Type) throw(new Error('Unknown WKB geometry type ' + tag));
+
+		return(new Type().readWKB(state));
+	}
+
+	static fromWKB(data: Uint8Array, options = wkbDefaults) {
+		const state = cloneOptions(options, wkbDefaults) as WKBState;
+
+		state.data = data;
+
+		return(Geometry.readWKB(state));
 	}
 
 	kind: GeometryKind;

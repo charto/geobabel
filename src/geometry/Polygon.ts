@@ -1,4 +1,4 @@
-import { writeU32, writeF64 } from '../Binary';
+import { writeU32, writeF64, readU32, readF64 } from '../Binary';
 import { WKBState, WKTOptions, GeometryKind, registerType, writePosListWKT } from '../WKX';
 import { Geometry } from './Geometry';
 
@@ -46,6 +46,25 @@ export class Polygon extends Geometry {
 		}
 
 		return(content.join(','));
+	}
+
+	readWKB(state: WKBState) {
+		const ringCount = readU32(state);
+		let count: number;
+		let ring: number[];
+
+		for(let ringNum = 0; ringNum < ringCount; ++ringNum) {
+			count = readU32(state) * 2;
+			ring = [];
+
+			for(let num = 0; num < count; ++num) {
+				ring[num] = readF64(state);
+			}
+
+			this.ringList[ringNum] = ring;
+		}
+
+		return(this);
 	}
 
 }

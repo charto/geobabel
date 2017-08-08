@@ -6,13 +6,13 @@ const ring1 = [ 12, 34, 56, 78, 90, 90, 12, 34 ];
 const ring2 = [ 87, 65, 43, 21, 0, 0, 87, 65 ];
 const polygon = new geo.Polygon([ ring1, ring2 ]);
 
-const c = new geo.GeometryCollection([ point, line, polygon ]);
+const set = new geo.GeometryCollection([ point, line, polygon ]);
 
-c.addChild(new geo.MultiPoint([ 12, 34, 56, 78 ]));
-c.addChild(new geo.MultiLineString([ [ 12, 34, 56, 78 ], [ 87, 65, 43, 21 ] ]));
-c.addChild(new geo.MultiPolygon([ polygon ]));
-c.addChild(new geo.MultiCurve([ line ]));
-c.addChild(new geo.MultiSurface([ polygon ]));
+set.addChild(new geo.MultiPoint([ 12, 34, 56, 78 ]));
+set.addChild(new geo.MultiLineString([ [ 12, 34, 56, 78 ], [ 87, 65, 43, 21 ] ]));
+set.addChild(new geo.MultiPolygon([ polygon ]));
+set.addChild(new geo.MultiCurve([ line ]));
+set.addChild(new geo.MultiSurface([ polygon ]));
 
 function dump(data: Uint8Array) {
 	console.log(
@@ -22,9 +22,15 @@ function dump(data: Uint8Array) {
 	);
 }
 
-const big = c.toWKB({ endian: geo.Endian.big });
-const little = c.toWKB({ endian: geo.Endian.little });
+const big = set.toWKB({ endian: geo.Endian.big });
+const little = set.toWKB({ endian: geo.Endian.little });
+const wkt = set.toWKT();
 
 dump(big);
 dump(little);
-console.log("SELECT ST_AsText(ST_GeomFromText('" + c.toWKT() + "'));");
+console.log("SELECT ST_AsText(ST_GeomFromText('" + wkt + "'));");
+
+if(geo.Geometry.fromWKB(big).toWKT() != wkt || geo.Geometry.fromWKB(little).toWKT() != wkt) {
+	console.error('WKT output mismatch');
+	process.exit(1);
+}
