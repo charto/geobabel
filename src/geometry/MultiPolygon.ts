@@ -1,14 +1,33 @@
-import { GeometryKind } from './Geometry';
+import { WKTOptions, TagWKB, TagWKT, writeChildListWKT } from '../WKX';
+import { Geometry } from './Geometry';
 import { GeometryCollection} from './GeometryCollection';
 import { MultiSurface } from './MultiSurface';
 import { Polygon } from './Polygon';
 
 export class MultiPolygon extends MultiSurface {
 
+	constructor(childList: Polygon[] | number[][][]) {
+		super();
+		const count = childList.length;
+
+		if(count && childList[0] instanceof Polygon) {
+			this.childList = childList as Polygon[];
+		} else {
+			for(let ringList of childList) {
+				this.addChild(new Polygon(ringList as number[][]));
+			}
+		}
+	}
+
 	addChild(child: Polygon) { this.childList.push(child); }
+
+	writeWKT(options: WKTOptions) {
+		return(writeChildListWKT(options, this.childList, '(', ')'));
+	}
 
 	childList: Polygon[] = [];
 
 }
 
-MultiPolygon.prototype.kind = GeometryKind.multiPolygon;
+MultiPolygon.prototype.tagWKB = TagWKB.multiPolygon;
+MultiPolygon.prototype.tagWKT = TagWKT.multiPolygon;

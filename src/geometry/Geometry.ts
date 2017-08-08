@@ -1,22 +1,38 @@
-export const enum GeometryKind {
-	geometry = 0,
-	point = 1,
-	lineString = 2,
-	polygon = 3,
-	multiPoint = 4,
-	multiLineString = 5,
-	multiPolygon = 6,
-	geometryCollection = 7,
-	multiCurve = 11,
-	multiSurface = 12,
-	curve = 13,
-	surface = 14
-}
+import { Endian, writeU32, writeF64 } from '../Binary';
+import { WKBOptions, wkbDefaults, WKTOptions, wktDefaults, TagWKB, TagWKT } from '../WKX';
 
 export abstract class Geometry {
-	abstract toWKB(typeList: number[][], dataList: number[][]): number;
+	abstract measureWKB(): number;
+	abstract writeWKT(options: WKTOptions): string;
 
-	kind: GeometryKind;
+	writeWKB(options: WKBOptions, data: Uint8Array, pos: number, count?: number) {
+		data[pos++] = options.endian;
+
+		pos = writeU32(options, data, pos, this.tagWKB);
+
+		if(count || count === 0) pos = writeU32(options, data, pos, count);
+
+		return(pos);
+	}
+
+	toWKB(options = wkbDefaults) {
+		const data = new Uint8Array(this.measureWKB());
+
+		this.writeWKB(options, data, 0);
+
+		return(data);
+	}
+
+	toWKT(options = wktDefaults) {
+		return(
+			this.tagWKT.toUpperCase() +
+			'(' + this.writeWKT(options) + ')'
+		);
+	}
+
+	tagWKB: TagWKB;
+	tagWKT: TagWKT;
 }
 
-Geometry.prototype.kind = GeometryKind.geometry;
+Geometry.prototype.tagWKB = TagWKB.geometry;
+Geometry.prototype.tagWKT = TagWKT.geometry;

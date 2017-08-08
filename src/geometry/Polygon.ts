@@ -1,33 +1,54 @@
-import { Geometry, GeometryKind } from './Geometry';
-import { BinaryType as T } from '../WKB';
+import { writeU32, writeF64 } from '../Binary';
+import { WKBOptions, WKTOptions, TagWKB, TagWKT, writePosListWKT } from '../WKX';
+import { Geometry } from './Geometry';
 
 export class Polygon extends Geometry {
 
-	toWKB(typeList: number[][], dataList: number[][]) {
-		let ringCount = 0;
-		let ptCount = 0;
+	constructor(public ringList: (number[] | null)[] = []) { super(); }
+
+	measureWKB() {
+		let size = 9;
 
 		for(let ring of this.ringList) {
-			if(ring) ++ringCount;
+			if(ring) size += 4 + ring.length * 8;
 		}
 
-		typeList.push([1, T.int8, 2, T.int32]);
-		dataList.push([1, this.kind, ringCount]);
+		return(size);
+	}
+
+	writeWKB(options: WKBOptions, data: Uint8Array, pos: number) {
+		let count = 0;
+
+		for(let ring of this.ringList) {
+			if(ring) ++count;
+		}
+
+		pos = super.writeWKB(options, data, pos, count);
 
 		for(let ring of this.ringList) {
 			if(ring) {
-				const count = ring.length >> 1;
-				typeList.push([1, T.int32, count * 2, T.double]);
-				dataList.push([count], ring);
-				ptCount += count;
+				pos = writeU32(options, data, pos, ring.length >> 1);
+
+				for(let coord of ring) {
+					pos = writeF64(options, data, pos, coord);
+				}
 			}
 		}
 
-		return(9 + ringCount * 4 + ptCount * 16);
+		return(pos);
 	}
 
-	ringList: (number[] | null)[] = [];
+	writeWKT(options: WKTOptions) {
+		const content: string[] = [];
+
+		for(let ring of this.ringList) {
+			if(ring) content.push('(' + writePosListWKT(options, ring) + ')');
+		}
+
+		return(content.join(','));
+	}
 
 }
 
-Polygon.prototype.kind = GeometryKind.polygon;
+Polygon.prototype.tagWKB = TagWKB.polygon;
+Polygon.prototype.tagWKT = TagWKT.polygon;

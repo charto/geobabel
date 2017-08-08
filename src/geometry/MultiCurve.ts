@@ -1,13 +1,15 @@
-import { GeometryKind } from './Geometry';
+import { TagWKB, TagWKT } from '../WKX';
+import { Geometry } from './Geometry';
 import { GeometryCollection} from './GeometryCollection';
 import { Curve } from './Curve';
 
 export class MultiCurve extends GeometryCollection {
 
-	addChild(child: Curve) { this.childList.push(child); }
+	constructor(public childList: Curve[] = []) { super(); }
 
-	childList: Curve[] = [];
+	addChild(child: Curve) { this.childList.push(child); }
 
 }
 
-MultiCurve.prototype.kind = GeometryKind.multiCurve;
+MultiCurve.prototype.tagWKB = TagWKB.multiCurve;
+MultiCurve.prototype.tagWKT = TagWKT.multiCurve;
