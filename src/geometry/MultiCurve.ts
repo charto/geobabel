@@ -1,6 +1,6 @@
-import { TagWKB, TagWKT } from '../WKX';
+import { GeometryKind, registerType } from '../WKX';
 import { Geometry } from './Geometry';
-import { GeometryCollection} from './GeometryCollection';
+import { GeometryCollection } from './GeometryCollection';
 import { Curve } from './Curve';
 
 export class MultiCurve extends GeometryCollection {
@@ -11,5 +11,4 @@ export class MultiCurve extends GeometryCollection {
 
 }
 
-MultiCurve.prototype.tagWKB = TagWKB.multiCurve;
-MultiCurve.prototype.tagWKT = TagWKT.multiCurve;
+registerType(MultiCurve, GeometryKind.multiCurve);

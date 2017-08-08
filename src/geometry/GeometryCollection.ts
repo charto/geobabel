@@ -1,4 +1,4 @@
-import { WKBOptions, WKTOptions, TagWKB, TagWKT } from '../WKX';
+import { WKBState, WKTOptions, GeometryKind, registerType } from '../WKX';
 import { Geometry } from './Geometry';
 
 export class GeometryCollection extends Geometry {
@@ -15,11 +15,11 @@ export class GeometryCollection extends Geometry {
 		return(size);
 	}
 
-	writeWKB(options: WKBOptions, data: Uint8Array, pos: number) {
-		pos = super.writeWKB(options, data, pos, this.childList.length);
+	writeWKB(state: WKBState, pos: number) {
+		pos = super.writeWKB(state, pos, this.childList.length);
 
 		for(let member of this.childList) {
-			pos = member.writeWKB(options, data, pos);
+			pos = member.writeWKB(state, pos);
 		}
 
 		return(pos);
@@ -37,5 +37,4 @@ export class GeometryCollection extends Geometry {
 
 }
 
-GeometryCollection.prototype.tagWKB = TagWKB.geometryCollection;
-GeometryCollection.prototype.tagWKT = TagWKT.geometryCollection;
+registerType(GeometryCollection, GeometryKind.geometryCollection);

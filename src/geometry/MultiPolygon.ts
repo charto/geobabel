@@ -1,4 +1,4 @@
-import { WKTOptions, TagWKB, TagWKT, writeChildListWKT } from '../WKX';
+import { WKTOptions, GeometryKind, registerType, writeChildListWKT } from '../WKX';
 import { Geometry } from './Geometry';
 import { GeometryCollection} from './GeometryCollection';
 import { MultiSurface } from './MultiSurface';
@@ -6,7 +6,7 @@ import { Polygon } from './Polygon';
 
 export class MultiPolygon extends MultiSurface {
 
-	constructor(childList: Polygon[] | number[][][]) {
+	constructor(childList: Polygon[] | number[][][] = []) {
 		super();
 		const count = childList.length;
 
@@ -29,5 +29,4 @@ export class MultiPolygon extends MultiSurface {
 
 }
 
-MultiPolygon.prototype.tagWKB = TagWKB.multiPolygon;
-MultiPolygon.prototype.tagWKT = TagWKT.multiPolygon;
+registerType(MultiPolygon, GeometryKind.multiPolygon);

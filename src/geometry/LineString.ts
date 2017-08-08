@@ -1,5 +1,5 @@
 import { writeF64 } from '../Binary';
-import { WKBOptions, WKTOptions, TagWKB, TagWKT, writePosListWKT } from '../WKX';
+import { WKBState, WKTOptions, GeometryKind, registerType, writePosListWKT } from '../WKX';
 import { Curve } from './Curve';
 
 export class LineString extends Curve {
@@ -10,11 +10,11 @@ export class LineString extends Curve {
 		return(9 + this.posList.length * 8);
 	}
 
-	writeWKB(options: WKBOptions, data: Uint8Array, pos: number) {
-		pos = super.writeWKB(options, data, pos, this.posList.length >> 1);
+	writeWKB(state: WKBState, pos: number) {
+		pos = super.writeWKB(state, pos, this.posList.length >> 1);
 
 		for(let coord of this.posList) {
-			pos = writeF64(options, data, pos, coord);
+			pos = writeF64(state, pos, coord);
 		}
 
 		return(pos);
@@ -26,5 +26,4 @@ export class LineString extends Curve {
 
 }
 
-LineString.prototype.tagWKB = TagWKB.lineString;
-LineString.prototype.tagWKT = TagWKT.lineString;
+registerType(LineString, GeometryKind.lineString);

@@ -5,6 +5,13 @@ export const enum Endian {
 
 export interface BinaryOptions {
 	endian: Endian;
+	data?: Uint8Array;
+	pos?: number;
+}
+
+export interface BinaryState extends BinaryOptions {
+	data: Uint8Array;
+	pos: number;
 }
 
 const tempF64 = new Float64Array(1);
@@ -14,7 +21,7 @@ const tempDummy = new Uint32Array(1);
 const bufDummy = new Uint8Array(tempDummy.buffer);
 let nativeEndian: Endian;
 
-writeU32({ endian: Endian.little }, bufDummy, 0, 0x01020304);
+writeU32({ endian: Endian.little, data: bufDummy, pos: 0 }, 0, 0x01020304);
 
 if(tempDummy[0] == 0x01020304) {
 	nativeEndian = Endian.little;
@@ -24,8 +31,10 @@ if(tempDummy[0] == 0x01020304) {
 	throw(new Error('Middle endian is not supported'));
 }
 
-export function writeU32(options: BinaryOptions, data: Uint8Array, pos: number, num: number) {
-	if(options.endian == Endian.little) {
+export function writeU32(state: BinaryState, pos: number, num: number) {
+	const data = state.data;
+
+	if(state.endian == Endian.little) {
 		data[pos++] = num;
 		data[pos++] = num >> 8;
 		data[pos++] = num >> 16;
@@ -40,10 +49,12 @@ export function writeU32(options: BinaryOptions, data: Uint8Array, pos: number, 
 	return(pos);
 }
 
-export function writeF64(options: BinaryOptions, data: Uint8Array, pos: number, num: number) {
+export function writeF64(state: BinaryState, pos: number, num: number) {
+	const data = state.data;
+
 	tempF64[0] = num;
 
-	if(options.endian == nativeEndian) {
+	if(state.endian == nativeEndian) {
 		data.set(bufF64, pos);
 		return(pos + 8);
 	} else {

@@ -1,4 +1,4 @@
-import { TagWKB, TagWKT } from '../WKX';
+import { GeometryKind, registerType } from '../WKX';
 import { Geometry } from './Geometry';
 import { GeometryCollection} from './GeometryCollection';
 import { Surface } from './Surface';
@@ -11,5 +11,4 @@ export class MultiSurface extends GeometryCollection {
 
 }
 
-MultiSurface.prototype.tagWKB = TagWKB.multiSurface;
-MultiSurface.prototype.tagWKT = TagWKT.multiSurface;
+registerType(MultiSurface, GeometryKind.multiSurface);

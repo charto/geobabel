@@ -1,5 +1,5 @@
 import { writeU32, writeF64 } from '../Binary';
-import { WKBOptions, WKTOptions, TagWKB, TagWKT, writePosListWKT } from '../WKX';
+import { WKBState, WKTOptions, GeometryKind, registerType, writePosListWKT } from '../WKX';
 import { Geometry } from './Geometry';
 
 export class Polygon extends Geometry {
@@ -16,21 +16,21 @@ export class Polygon extends Geometry {
 		return(size);
 	}
 
-	writeWKB(options: WKBOptions, data: Uint8Array, pos: number) {
+	writeWKB(state: WKBState, pos: number) {
 		let count = 0;
 
 		for(let ring of this.ringList) {
 			if(ring) ++count;
 		}
 
-		pos = super.writeWKB(options, data, pos, count);
+		pos = super.writeWKB(state, pos, count);
 
 		for(let ring of this.ringList) {
 			if(ring) {
-				pos = writeU32(options, data, pos, ring.length >> 1);
+				pos = writeU32(state, pos, ring.length >> 1);
 
 				for(let coord of ring) {
-					pos = writeF64(options, data, pos, coord);
+					pos = writeF64(state, pos, coord);
 				}
 			}
 		}
@@ -50,5 +50,4 @@ export class Polygon extends Geometry {
 
 }
 
-Polygon.prototype.tagWKB = TagWKB.polygon;
-Polygon.prototype.tagWKT = TagWKT.polygon;
+registerType(Polygon, GeometryKind.polygon);

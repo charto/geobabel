@@ -1,38 +1,49 @@
-import { Endian, writeU32, writeF64 } from '../Binary';
-import { WKBOptions, wkbDefaults, WKTOptions, wktDefaults, TagWKB, TagWKT } from '../WKX';
+import { Endian, readU32, writeU32, writeF64 } from '../Binary';
+import {
+	WKBOptions,
+	WKBState,
+	wkbDefaults,
+	WKTOptions,
+	wktDefaults,
+	cloneOptions,
+	GeometryKind,
+	typeList
+} from '../WKX';
 
 export abstract class Geometry {
 	abstract measureWKB(): number;
 	abstract writeWKT(options: WKTOptions): string;
 
-	writeWKB(options: WKBOptions, data: Uint8Array, pos: number, count?: number) {
-		data[pos++] = options.endian;
+	writeWKB(state: WKBState, pos: number, count?: number) {
+		const data = state.data;
 
-		pos = writeU32(options, data, pos, this.tagWKB);
+		data[pos++] = state.endian;
 
-		if(count || count === 0) pos = writeU32(options, data, pos, count);
+		pos = writeU32(state, pos, this.kind);
+
+		if(count || count === 0) pos = writeU32(state, pos, count);
 
 		return(pos);
 	}
 
 	toWKB(options = wkbDefaults) {
-		const data = new Uint8Array(this.measureWKB());
+		const state = cloneOptions(options, wkbDefaults) as WKBState;
 
-		this.writeWKB(options, data, 0);
+		if(!state.data) state.data = new Uint8Array(this.measureWKB());
 
-		return(data);
+		this.writeWKB(state, state.pos);
+
+		return(state.data);
 	}
 
 	toWKT(options = wktDefaults) {
 		return(
-			this.tagWKT.toUpperCase() +
+			GeometryKind[this.kind].toUpperCase() +
 			'(' + this.writeWKT(options) + ')'
 		);
 	}
 
-	tagWKB: TagWKB;
-	tagWKT: TagWKT;
+	kind: GeometryKind;
 }
 
-Geometry.prototype.tagWKB = TagWKB.geometry;
-Geometry.prototype.tagWKT = TagWKT.geometry;
+Geometry.prototype.kind = GeometryKind.geometry;

@@ -1,4 +1,4 @@
-import { WKTOptions, TagWKB, TagWKT, writeChildListWKT } from '../WKX';
+import { WKTOptions, GeometryKind, registerType, writeChildListWKT } from '../WKX';
 import { Geometry } from './Geometry';
 import { GeometryCollection} from './GeometryCollection';
 import { MultiCurve } from './MultiCurve';
@@ -6,7 +6,7 @@ import { LineString } from './LineString';
 
 export class MultiLineString extends MultiCurve {
 
-	constructor(childList: LineString[] | number[][]) {
+	constructor(childList: LineString[] | number[][] = []) {
 		super();
 		const count = childList.length;
 
@@ -29,5 +29,4 @@ export class MultiLineString extends MultiCurve {
 
 }
 
-MultiLineString.prototype.tagWKB = TagWKB.multiLineString;
-MultiLineString.prototype.tagWKT = TagWKT.multiLineString;
+registerType(MultiLineString, GeometryKind.multiLineString);

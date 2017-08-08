@@ -1,11 +1,11 @@
-import { WKTOptions, TagWKB, TagWKT, writeChildListWKT } from '../WKX';
+import { WKTOptions, GeometryKind, registerType, writeChildListWKT } from '../WKX';
 import { Geometry } from './Geometry';
 import { GeometryCollection} from './GeometryCollection';
 import { Point } from './Point';
 
 export class MultiPoint extends GeometryCollection {
 
-	constructor(childList: Point[] | number[]) {
+	constructor(childList: Point[] | number[] = []) {
 		super();
 		const count = childList.length;
 
@@ -31,5 +31,4 @@ export class MultiPoint extends GeometryCollection {
 
 }
 
-MultiPoint.prototype.tagWKB = TagWKB.multiPoint;
-MultiPoint.prototype.tagWKT = TagWKT.multiPoint;
+registerType(MultiPoint, GeometryKind.multiPoint);

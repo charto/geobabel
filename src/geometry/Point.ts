@@ -1,5 +1,5 @@
 import { writeF64 } from '../Binary';
-import { WKBOptions, WKTOptions, TagWKB, TagWKT } from '../WKX';
+import { WKBState, WKTOptions, GeometryKind, registerType } from '../WKX';
 import { Geometry } from './Geometry';
 
 export class Point extends Geometry {
@@ -13,11 +13,11 @@ export class Point extends Geometry {
 		return(21);
 	}
 
-	writeWKB(options: WKBOptions, data: Uint8Array, pos: number) {
-		pos = super.writeWKB(options, data, pos);
+	writeWKB(state: WKBState, pos: number) {
+		pos = super.writeWKB(state, pos);
 
-		pos = writeF64(options, data, pos, this.pos[0]);
-		pos = writeF64(options, data, pos, this.pos[1]);
+		pos = writeF64(state, pos, this.pos[0]);
+		pos = writeF64(state, pos, this.pos[1]);
 
 		return(pos);
 	}
@@ -30,5 +30,4 @@ export class Point extends Geometry {
 
 }
 
-Point.prototype.tagWKB = TagWKB.point;
-Point.prototype.tagWKT = TagWKT.point;
+registerType(Point, GeometryKind.point);

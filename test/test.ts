@@ -14,18 +14,17 @@ c.addChild(new geo.MultiPolygon([ polygon ]));
 c.addChild(new geo.MultiCurve([ line ]));
 c.addChild(new geo.MultiSurface([ polygon ]));
 
-function dump(geometry: geo.Geometry, endian: geo.Endian) {
+function dump(data: Uint8Array) {
 	console.log(
 		"SELECT ST_AsText(ST_GeomFromWKB('\\x" +
-
-		Buffer.from(
-			geometry.toWKB({ endian })
-		).toString('hex') +
-
+		Buffer.from(data).toString('hex') +
 		"'));"
 	);
 }
 
-dump(c, geo.Endian.big);
-dump(c, geo.Endian.little);
+const big = c.toWKB({ endian: geo.Endian.big });
+const little = c.toWKB({ endian: geo.Endian.little });
+
+dump(big);
+dump(little);
 console.log("SELECT ST_AsText(ST_GeomFromText('" + c.toWKT() + "'));");

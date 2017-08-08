@@ -1,17 +1,36 @@
-import { BinaryOptions, Endian } from './Binary';
+import { BinaryOptions, BinaryState, Endian } from './Binary';
 import { Geometry } from './geometry/Geometry';
 
 export interface WKBOptions extends BinaryOptions {}
 
+export interface WKBState extends WKBOptions, BinaryState {
+	data: Uint8Array;
+	pos: number;
+}
+
 export const wkbDefaults: WKBOptions = {
-	endian: Endian.little
+	endian: Endian.little,
+	pos: 0
 };
 
 export interface WKTOptions {}
 
 export const wktDefaults: WKTOptions = {};
 
-export enum TagWKB {
+export function cloneOptions<Options>(options: Options, defaults: Options) {
+	const config: Options = {} as any;
+	let optionSet: { [key: string]: any };
+
+	for(optionSet of [ defaults, options ]) {
+		for(let key of Object.keys(optionSet)) {
+			if(optionSet[key] !== void 0) (config as any)[key] = optionSet[key];
+		}
+	}
+
+	return(config);
+}
+
+export enum GeometryKind {
 	geometry = 0,
 	point = 1,
 	lineString = 2,
@@ -26,19 +45,11 @@ export enum TagWKB {
 	surface = 14
 }
 
-export enum TagWKT {
-	geometry = 'Geometry',
-	point = 'Point',
-	lineString = 'LineString',
-	polygon = 'Polygon',
-	multiPoint = 'MultiPoint',
-	multiLineString = 'MultiLineString',
-	multiPolygon = 'MultiPolygon',
-	geometryCollection = 'GeometryCollection',
-	multiCurve = 'MultiCurve',
-	multiSurface = 'MultiSurface',
-	curve = 'Curve',
-	surface = 'Surface'
+export const typeList: ({ new(): Geometry } | null)[] = [];
+
+export function registerType(Type: { new(): Geometry }, kind: GeometryKind) {
+	Type.prototype.kind = kind;
+	typeList[kind] = Type;
 }
 
 export function writePosListWKT(options: WKTOptions, posList: number[]) {
