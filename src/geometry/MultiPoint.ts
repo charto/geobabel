@@ -12,6 +12,7 @@ export class MultiPoint extends GeometryCollection {
 		if(count && childList[0] instanceof Point) {
 			this.childList = childList as Point[];
 		} else {
+			this.childList = [];
 			for(let num = 0; num < count; num += 2) {
 				this.addChild(new Point(
 					childList[num] as number,

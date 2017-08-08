@@ -4,7 +4,7 @@ import { Geometry } from './Geometry';
 
 export class Polygon extends Geometry {
 
-	constructor(public ringList: (number[] | null)[] = []) { super(); }
+	constructor(public ringList: (number[] | null | undefined)[] = []) { super(); }
 
 	measureWKB() {
 		let size = 9;

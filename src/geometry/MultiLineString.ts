@@ -13,9 +13,9 @@ export class MultiLineString extends MultiCurve {
 		if(count && childList[0] instanceof LineString) {
 			this.childList = childList as LineString[];
 		} else {
-			for(let posList of childList) {
-				this.addChild(new LineString(posList as number[]));
-			}
+			this.childList = (childList as number[][]).map(
+				(posList: number[]) => new LineString(posList)
+			);
 		}
 	}
 
@@ -25,7 +25,7 @@ export class MultiLineString extends MultiCurve {
 		return(writeChildListWKT(options, this.childList, '(', ')'));
 	}
 
-	childList: LineString[] = [];
+	childList: LineString[];
 
 }
 

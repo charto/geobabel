@@ -13,9 +13,9 @@ export class MultiPolygon extends MultiSurface {
 		if(count && childList[0] instanceof Polygon) {
 			this.childList = childList as Polygon[];
 		} else {
-			for(let ringList of childList) {
-				this.addChild(new Polygon(ringList as number[][]));
-			}
+			this.childList = (childList as number[][][]).map(
+				(ringList: number[][]) => new Polygon(ringList)
+			);
 		}
 	}
 
@@ -25,7 +25,7 @@ export class MultiPolygon extends MultiSurface {
 		return(writeChildListWKT(options, this.childList, '(', ')'));
 	}
 
-	childList: Polygon[] = [];
+	childList: Polygon[];
 
 }
 
