@@ -22,7 +22,7 @@ export class MultiPolygon extends MultiSurface {
 	addChild(child: Polygon) { this.childList.push(child); }
 
 	writeWKT(options: WKTOptions) {
-		return(writeChildListWKT(options, this.childList, '(', ')'));
+		return(writeChildListWKT(this.childList, options, '(', ')'));
 	}
 
 	childList: Polygon[];

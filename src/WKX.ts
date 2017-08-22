@@ -52,7 +52,7 @@ export function registerType(Type: { new(): Geometry }, kind: GeometryKind) {
 	typeList[kind] = Type;
 }
 
-export function writePosListWKT(options: WKTOptions, posList: number[]) {
+export function writePosListWKT(posList: number[], options = wktDefaults) {
 	const content: string[] = [];
 	const count = posList.length;
 
@@ -63,7 +63,7 @@ export function writePosListWKT(options: WKTOptions, posList: number[]) {
 	return(content.join(','));
 }
 
-export function writeChildListWKT<Member extends Geometry>(options: WKTOptions, childList: Member[], prefix = '', suffix = '') {
+export function writeChildListWKT<Member extends Geometry>(childList: Member[], options = wktDefaults, prefix = '', suffix = '') {
 	return(
 		childList.map(
 			(member: Member) => prefix + member.writeWKT(options) + suffix

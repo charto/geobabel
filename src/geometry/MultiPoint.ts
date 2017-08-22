@@ -25,7 +25,7 @@ export class MultiPoint extends GeometryCollection {
 	addChild(child: Point) { this.childList.push(child); }
 
 	writeWKT(options: WKTOptions) {
-		return(writeChildListWKT(options, this.childList));
+		return(writeChildListWKT(this.childList, options));
 	}
 
 	childList: Point[];

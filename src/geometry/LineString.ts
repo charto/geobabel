@@ -21,7 +21,7 @@ export class LineString extends Curve {
 	}
 
 	writeWKT(options: WKTOptions) {
-		return(writePosListWKT(options, this.posList));
+		return(writePosListWKT(this.posList, options));
 	}
 
 	readWKB(state: WKBState) {

@@ -2,7 +2,7 @@
 // Released under the MIT license, see LICENSE.
 
 export { writeU32, writeF64, Endian } from './Binary';
-export { GeometryKind } from './WKX';
+export { GeometryKind, writePosListWKT } from './WKX';
 
 export { Geometry } from './geometry/Geometry';
 export { Point } from './geometry/Point';

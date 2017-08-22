@@ -42,7 +42,7 @@ export class Polygon extends Geometry {
 		const content: string[] = [];
 
 		for(let ring of this.ringList) {
-			if(ring) content.push('(' + writePosListWKT(options, ring) + ')');
+			if(ring) content.push('(' + writePosListWKT(ring, options) + ')');
 		}
 
 		return(content.join(','));
