@@ -7,6 +7,7 @@ Formats:
 
 - WKB (read / write)
 - WKT (write)
+- GML (with [`geobabel-gml`](https://github.com/charto/geobabel-gml))
 
 Geometries:
 
