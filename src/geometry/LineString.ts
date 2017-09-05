@@ -1,17 +1,19 @@
-import { readU32, readF64, writeF64 } from '../Binary';
-import { WKBState, WKTOptions, GeometryKind, registerType, writePosListWKT } from '../WKX';
+import { readU32, writeU32, readF64, writeF64 } from '../Binary';
+import { WKBState, WKTOptions, GeometryKind, registerType } from '../WKX';
 import { Curve } from './Curve';
 
-export class LineString extends Curve {
+export type StringSpec = number[];
 
-	constructor(public posList: number[] = []) { super(); }
+export class GenericString extends Curve {
+
+	constructor(public posList: StringSpec = []) { super(); }
 
 	measureWKB() {
 		return(9 + this.posList.length * 8);
 	}
 
-	writeWKB(state: WKBState, pos: number) {
-		pos = super.writeWKB(state, pos, this.posList.length >> 1);
+	writeWKB(state: WKBState, pos: number, contentOnly?: boolean) {
+		pos = super.writeWKB(state, pos, contentOnly, this.posList.length >> 1);
 
 		for(let coord of this.posList) {
 			pos = writeF64(state, pos, coord);
@@ -21,7 +23,15 @@ export class LineString extends Curve {
 	}
 
 	writeWKT(options: WKTOptions) {
-		return(writePosListWKT(this.posList, options));
+		const content: string[] = [];
+		const posList = this.posList;
+		const count = posList.length;
+
+		for(let num = 0; num < count; num += 2) {
+			content.push(posList[num] + ' ' + posList[num + 1]);
+		}
+
+		return(content.join(','));
 	}
 
 	readWKB(state: WKBState) {
@@ -35,5 +45,7 @@ export class LineString extends Curve {
 	}
 
 }
+
+export class LineString extends GenericString {}
 
 registerType(LineString, GeometryKind.lineString);

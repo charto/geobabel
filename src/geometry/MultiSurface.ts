@@ -1,14 +1,9 @@
 import { GeometryKind, registerType } from '../WKX';
-import { Geometry } from './Geometry';
 import { GeometryCollection} from './GeometryCollection';
 import { Surface } from './Surface';
 
-export class MultiSurface extends GeometryCollection {
+export class MultiSurface<Member extends Surface = Surface> extends GeometryCollection<Member> {}
 
-	constructor(public childList: Surface[] = []) { super(); }
-
-	addChild(child: Surface) { this.childList.push(child); }
-
-}
+MultiSurface.prototype.defaultKind = GeometryKind.polygon;
 
 registerType(MultiSurface, GeometryKind.multiSurface);

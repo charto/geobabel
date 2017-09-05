@@ -2,49 +2,57 @@ import { readU32 } from '../Binary';
 import { WKBState, WKTOptions, GeometryKind, registerType } from '../WKX';
 import { Geometry } from './Geometry';
 
-export class GeometryCollection extends Geometry {
+export class GeometryCollection<Member extends Geometry = Geometry> extends Geometry {
 
-	constructor(public childList: Geometry[] = []) { super(); }
+	constructor(public childList: (Member | null | undefined)[] = []) { super(); }
 
 	measureWKB() {
 		let size = 9;
 
-		for(let member of this.childList) {
-			size += member.measureWKB();
+		for(let child of this.childList) {
+			if(child) size += child.measureWKB();
 		}
 
 		return(size);
 	}
 
-	writeWKB(state: WKBState, pos: number) {
-		pos = super.writeWKB(state, pos, this.childList.length);
+	writeWKB(state: WKBState, pos: number, contentOnly?: boolean) {
+		let count = 0;
 
-		for(let member of this.childList) {
-			pos = member.writeWKB(state, pos);
+		for(let child of this.childList) {
+			if(child) ++count;
+		}
+
+		pos = super.writeWKB(state, pos, false, count);
+
+		for(let child of this.childList) {
+			if(child) pos = child.writeWKB(state, pos, contentOnly);
 		}
 
 		return(pos);
 	}
 
 	writeWKT(options: WKTOptions) {
-		return(
-			this.childList.map(
-				(member: Geometry) => member.toWKT(options)
-			).join(',')
-		);
+		const result = [];
+
+		for(let child of this.childList) {
+			if(child) result.push(child.toWKT(options));
+		}
+
+		return(result.join(','));
 	}
 
 	readWKB(state: WKBState) {
 		const count = readU32(state);
 
 		for(let num = 0; num < count; ++num) {
-			this.addChild(Geometry.readWKB(state));
+			this.addChild(Geometry.readWKB(state) as Member);
 		}
 
 		return(this);
 	}
 
-	addChild(child: Geometry) { this.childList.push(child); }
+	addChild(child: Member) { this.childList.push(child); }
 
 }
 

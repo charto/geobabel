@@ -13,8 +13,8 @@ export class Point extends Geometry {
 		return(21);
 	}
 
-	writeWKB(state: WKBState, pos: number) {
-		pos = super.writeWKB(state, pos);
+	writeWKB(state: WKBState, pos: number, contentOnly?: boolean) {
+		pos = super.writeWKB(state, pos, contentOnly);
 
 		pos = writeF64(state, pos, this.pos[0]);
 		pos = writeF64(state, pos, this.pos[1]);

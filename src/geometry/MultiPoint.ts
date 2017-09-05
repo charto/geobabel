@@ -1,9 +1,9 @@
-import { WKTOptions, GeometryKind, registerType, writeChildListWKT } from '../WKX';
+import { WKTOptions, GeometryKind, registerType } from '../WKX';
 import { Geometry } from './Geometry';
 import { GeometryCollection} from './GeometryCollection';
 import { Point } from './Point';
 
-export class MultiPoint extends GeometryCollection {
+export class MultiPoint extends GeometryCollection<Point> {
 
 	constructor(childList: Point[] | number[] = []) {
 		super();
@@ -22,13 +22,11 @@ export class MultiPoint extends GeometryCollection {
 		}
 	}
 
-	addChild(child: Point) { this.childList.push(child); }
-
 	writeWKT(options: WKTOptions) {
-		return(writeChildListWKT(this.childList, options));
+		return(this.childList.map(
+				(child: Point) => child.writeWKT(options)
+		).join(','));
 	}
-
-	childList: Point[];
 
 }
 

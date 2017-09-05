@@ -39,6 +39,9 @@ export enum GeometryKind {
 	multiLineString = 5,
 	multiPolygon = 6,
 	geometryCollection = 7,
+	circularString = 8,
+	compoundCurve = 9,
+	curvePolygon = 10,
 	multiCurve = 11,
 	multiSurface = 12,
 	curve = 13,
@@ -50,25 +53,6 @@ export const typeList: ({ new(): Geometry } | null)[] = [];
 export function registerType(Type: { new(): Geometry }, kind: GeometryKind) {
 	Type.prototype.kind = kind;
 	typeList[kind] = Type;
-}
-
-export function writePosListWKT(posList: number[], options = wktDefaults) {
-	const content: string[] = [];
-	const count = posList.length;
-
-	for(let num = 0; num < count; num += 2) {
-		content.push(posList[num] + ' ' + posList[num + 1]);
-	}
-
-	return(content.join(','));
-}
-
-export function writeChildListWKT<Member extends Geometry>(childList: Member[], options = wktDefaults, prefix = '', suffix = '') {
-	return(
-		childList.map(
-			(member: Member) => prefix + member.writeWKT(options) + suffix
-		).join(',')
-	);
 }
 
 export function importWKB(data: Uint8Array) {

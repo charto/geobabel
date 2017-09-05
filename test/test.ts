@@ -1,18 +1,23 @@
 import * as geo from '../dist/index';
 
+const pts2 = [ 12, 34, 56, 78];
+
 const point = new geo.Point(12, 34);
-const line = new geo.LineString([ 12, 34, 56, 78]);
+const line = new geo.LineString(pts2);
+const circle = new geo.CircularString([ 56, 78, 90, 90, 12, 34]);
 const ring1 = [ 12, 34, 56, 78, 90, 90, 12, 34 ];
 const ring2 = [ 87, 65, 43, 21, 0, 0, 87, 65 ];
 const polygon = new geo.Polygon([ ring1, ring2 ]);
+const compound = new geo.CompoundCurve([ line, circle ]);
+const curvePolygon = new geo.CurvePolygon([ compound ]);
 
-const set = new geo.GeometryCollection([ point, line, polygon ]);
+const set = new geo.GeometryCollection([ point, line, polygon ] as geo.Geometry[]);
 
-set.addChild(new geo.MultiPoint([ 12, 34, 56, 78 ]));
-set.addChild(new geo.MultiLineString([ [ 12, 34, 56, 78 ], [ 87, 65, 43, 21 ] ]));
+set.addChild(new geo.MultiPoint(pts2));
+set.addChild(new geo.MultiLineString([ pts2, [ 87, 65, 43, 21 ] ]));
 set.addChild(new geo.MultiPolygon([ polygon ]));
-set.addChild(new geo.MultiCurve([ line ]));
-set.addChild(new geo.MultiSurface([ polygon ]));
+set.addChild(new geo.MultiCurve([ line, compound ]));
+set.addChild(new geo.MultiSurface([ polygon, curvePolygon ]));
 
 function dump(data: Uint8Array) {
 	console.log(

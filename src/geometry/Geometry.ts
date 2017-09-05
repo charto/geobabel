@@ -11,16 +11,18 @@ import {
 } from '../WKX';
 
 export abstract class Geometry {
+
 	abstract measureWKB(): number;
 	abstract writeWKT(options: WKTOptions): string;
 	abstract readWKB(state: WKBState): this;
 
-	writeWKB(state: WKBState, pos: number, count?: number) {
+	writeWKB(state: WKBState, pos: number, contentOnly?: boolean, count?: number) {
 		const data = state.data;
 
-		data[pos++] = state.endian;
-
-		pos = writeU32(state, pos, this.kind);
+		if(!contentOnly) {
+			data[pos++] = state.endian;
+			pos = writeU32(state, pos, this.kind);
+		}
 
 		if(count || count === 0) pos = writeU32(state, pos, count);
 
@@ -39,7 +41,7 @@ export abstract class Geometry {
 
 	toWKT(options = wktDefaults) {
 		return(
-			GeometryKind[this.kind].toUpperCase() +
+			(this.kind == this.defaultKind ? '' : GeometryKind[this.kind].toUpperCase()) +
 			'(' + this.writeWKT(options) + ')'
 		);
 	}
@@ -64,6 +66,8 @@ export abstract class Geometry {
 	}
 
 	kind: GeometryKind;
+	defaultKind: GeometryKind;
+
 }
 
 Geometry.prototype.kind = GeometryKind.geometry;

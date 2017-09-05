@@ -18,6 +18,9 @@ Geometries:
 - MultiLineString
 - MultiPolygon
 - GeometryCollection
+- CircularString
+- CompoundCurve
+- CurvePolygon
 - MultiCurve
 - MultiSurface
 

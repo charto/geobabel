@@ -1,31 +1,22 @@
-import { WKTOptions, GeometryKind, registerType, writeChildListWKT } from '../WKX';
+import { WKTOptions, GeometryKind, registerType } from '../WKX';
 import { Geometry } from './Geometry';
 import { GeometryCollection} from './GeometryCollection';
 import { MultiSurface } from './MultiSurface';
-import { Polygon } from './Polygon';
+import { Polygon, GenericPolygon, PolygonRingSpec } from './Polygon';
 
-export class MultiPolygon extends MultiSurface {
+export class MultiPolygon extends MultiSurface<Polygon> {
 
-	constructor(childList: Polygon[] | number[][][] = []) {
+	constructor(childList: ( Polygon | PolygonRingSpec[] )[] = []) {
 		super();
-		const count = childList.length;
 
-		if(count && childList[0] instanceof Polygon) {
-			this.childList = childList as Polygon[];
-		} else {
-			this.childList = (childList as number[][][]).map(
-				(ringList: number[][]) => new Polygon(ringList)
-			);
+		for(let child of childList) {
+			if(child instanceof Polygon) {
+				this.childList.push(child);
+			} else {
+				this.childList.push(new Polygon(child));
+			}
 		}
 	}
-
-	addChild(child: Polygon) { this.childList.push(child); }
-
-	writeWKT(options: WKTOptions) {
-		return(writeChildListWKT(this.childList, options, '(', ')'));
-	}
-
-	childList: Polygon[];
 
 }
 

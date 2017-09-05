@@ -2,7 +2,7 @@
 // Released under the MIT license, see LICENSE.
 
 export { writeU32, writeF64, Endian } from './Binary';
-export { GeometryKind, writePosListWKT } from './WKX';
+export { GeometryKind } from './WKX';
 
 export { Geometry } from './geometry/Geometry';
 export { Point } from './geometry/Point';
@@ -12,6 +12,9 @@ export { MultiPoint } from './geometry/MultiPoint';
 export { MultiLineString } from './geometry/MultiLineString';
 export { MultiPolygon } from './geometry/MultiPolygon';
 export { GeometryCollection } from './geometry/GeometryCollection';
+export { CircularString } from './geometry/CircularString';
+export { CompoundCurve } from './geometry/CompoundCurve';
+export { CurvePolygon } from './geometry/CurvePolygon';
 export { MultiCurve } from './geometry/MultiCurve';
 export { MultiSurface } from './geometry/MultiSurface';
 export { Curve } from './geometry/Curve';
