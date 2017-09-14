@@ -1,6 +1,6 @@
 {
   "name": "geobabel",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Geodata conversion",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -27,7 +27,7 @@
     "wkt"
   ],
   "devDependencies": {
-    "@types/node": "^8.0.19",
-    "typescript": "^2.4.2"
+    "@types/node": "^8.0.28",
+    "typescript": "^2.5.2"
   }
 }
