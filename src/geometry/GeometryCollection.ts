@@ -36,7 +36,13 @@ export class GeometryCollection<Member extends Geometry = Geometry> extends Geom
 		const result = [];
 
 		for(let child of this.childList) {
-			if(child) result.push(child.toWKT(options));
+			if(child) {
+				if(child.kind == this.defaultKind) {
+					result.push('(' + child.writeWKT(options) + ')');
+				} else {
+					result.push(child.toWKT(options));
+				}
+			}
 		}
 
 		return(result.join(','));

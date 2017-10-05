@@ -41,7 +41,7 @@ export abstract class Geometry {
 
 	toWKT(options = wktDefaults) {
 		return(
-			(this.kind == this.defaultKind ? '' : GeometryKind[this.kind].toUpperCase()) +
+			GeometryKind[this.kind].toUpperCase() +
 			'(' + this.writeWKT(options) + ')'
 		);
 	}
